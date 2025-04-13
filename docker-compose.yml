@@ -1,0 +1,112 @@
+version: "3.8"
+
+services:
+  mysqldb:
+    image: mysql:8.3.0
+    container_name: mysqldb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=LivreMs
+    ports:
+      - "3306:3306"
+    networks:
+      - ms
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+    networks:
+      - ms
+
+  config-server:
+    image: garfa/config-server:0.0.1
+    container_name: config-server
+    restart: always
+    ports:
+      - "8888:8888"
+    env_file:
+      - .env
+    environment:
+      - spring_cloud_config_server_git_uri=${GIT_URI}
+      - spring_cloud_config_server_git_username=${GIT_USERNAME}
+      - spring_cloud_config_server_git_password=${GIT_TOKEN}
+    networks:
+      - ms
+
+  discovery-server:
+    depends_on:
+      - config-server
+    image: garfa/discovery-server:0.0.1
+    container_name: discovery-server
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - ms
+
+  auteur-ms:
+    depends_on:
+      - discovery-server
+      - mongodb
+      - config-server
+    image: garfa/auteur-ms:0.0.1
+    container_name: auteur-ms
+    restart: always
+    ports:
+      - "8092:8092"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/AuteurMS
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - ms
+
+  livre-ms:
+    depends_on:
+      - discovery-server
+      - mysqldb
+      - config-server
+    image: garfa/livre-ms:0.0.1
+    container_name: livre-ms
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/LivreMs?createDatabaseIfNotExist=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - ms
+
+  gateway-api:
+    depends_on:
+      - auteur-ms
+      - livre-ms
+      - discovery-server
+      - config-server
+    image: garfa/gateway-api:0.0.1
+    container_name: gateway-api
+    restart: always
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - ms
+
+volumes:
+  mysql-db:
+  mongodb:
+
+networks:
+  ms:
