@@ -16,7 +16,8 @@ public class GatewayServerApplication {
     @Bean
     public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("factures-route", p -> p.path("/api/factures/**").uri("http://localhost:8081")) // Cibler un service en local
+                .route("factures-route", p -> p.path("/api/factures/**").uri("http://localhost:8081"))
+                .route("payments-route", p -> p.path("/api/payments/**").uri("http://localhost:8082"))// Cibler un service en local
                 .build();
     }
 }
