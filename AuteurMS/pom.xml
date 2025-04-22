@@ -92,7 +92,12 @@
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>my-private-repo</id>
+            <url>https://your.repo.url/repository/maven-releases</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <!-- Plugin pour la compilation avec Lombok et MapStruct -->
