@@ -36,6 +36,44 @@ public class ServiceServiceImpl implements IServiceService {
     public ServiceOffer getServiceById(Long id) {
         return repository.findById(id).orElse(null);
     }
+    @Override
+    public ServiceOffer updateService(Long id, ServiceOffer updated) {
+        ServiceOffer existing = repository.findById(id).orElseThrow(() -> new RuntimeException("Service non trouvé"));
+        existing.setName(updated.getName());
+        existing.setDescription(updated.getDescription());
+        existing.setPrice(updated.getPrice());
+        existing.setDuration(updated.getDuration());
+        existing.setClientId(updated.getClientId());
+        existing.setCapacity(updated.getCapacity());
+        existing.setReservedSlots(updated.getReservedSlots());
+        return repository.save(existing);
+    }
+    @Override
+    public void deleteService(Long id) {
+        repository.deleteById(id);
+    }
+    @Override
+    public double calculerTauxOccupation(Long id) {
+        ServiceOffer service = repository.findById(id).orElseThrow(() -> new RuntimeException("Service non trouvé"));
+        if (service.getCapacity() == null || service.getCapacity() == 0) return 0.0;
+        return ((double) service.getReservedSlots() / service.getCapacity()) * 100;
+    }
+    // ServiceServiceImpl.java
+    @Override
+    public ServiceOffer reserveSlot(Long serviceId) {
+        ServiceOffer service = repository.findById(serviceId).orElse(null);
+        if (service == null) {
+            throw new RuntimeException("Service not found");
+        }
+
+        if (service.getReservedSlots() >= service.getCapacity()) {
+            throw new RuntimeException("No available slots for this service");
+        }
+
+        service.setReservedSlots(service.getReservedSlots() + 1);
+        return repository.save(service);
+    }
+
 
 
 }

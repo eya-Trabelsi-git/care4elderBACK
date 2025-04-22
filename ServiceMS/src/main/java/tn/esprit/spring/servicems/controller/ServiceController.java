@@ -31,4 +31,23 @@ public class ServiceController {
         return service.getServiceById(id);
     }
 
+    @PutMapping("/{id}")
+    public ServiceOffer update(@PathVariable Long id, @RequestBody ServiceOffer updated) {
+        return service.updateService(id, updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.deleteService(id);
+    }
+
+    @GetMapping("/{id}/occupation-rate")
+    public double getOccupationRate(@PathVariable Long id) {
+        return service.calculerTauxOccupation(id);
+    }
+    @PostMapping("/{id}/reserve")
+    public ServiceOffer reserveSlot(@PathVariable Long id) {
+        return service.reserveSlot(id);
+    }
+
 }

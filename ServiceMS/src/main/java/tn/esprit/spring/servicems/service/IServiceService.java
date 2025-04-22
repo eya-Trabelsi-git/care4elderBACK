@@ -8,5 +8,9 @@ public interface IServiceService {
     ServiceOffer createService(ServiceOffer service);
     List<ServiceOffer> getAllServices();
     ServiceOffer getServiceById(Long id);
+    ServiceOffer updateService(Long id, ServiceOffer updated);
+    void deleteService(Long id);
+    double calculerTauxOccupation(Long id);
+    ServiceOffer reserveSlot(Long serviceId);
 
 }

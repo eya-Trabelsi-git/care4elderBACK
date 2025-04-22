@@ -39,6 +39,7 @@ services:
     environment:
       - GIT_URI=https://github.com/ghassendallegi/ms_config.git
       - GIT_USERNAME=ghassendallegi
+
     networks:
       - ms
 
