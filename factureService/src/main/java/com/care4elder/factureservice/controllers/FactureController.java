@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200" ) // ✅ Autorise Angular
 @RestController
 @RequestMapping("/api/factures")
+
+
 public class FactureController {
 
     private final FactureService factureService;
@@ -35,4 +38,9 @@ public class FactureController {
     public void deleteFacture(@PathVariable String id) {
         factureService.deleteFacture(id);
     }
+    @PutMapping("/{id}")
+    public Facture updateFacture(@PathVariable String id, @RequestBody Facture facture) {
+        return factureService.updateFacture(id, facture);  // Appelle le service pour mettre à jour la facture
+    }
+
 }

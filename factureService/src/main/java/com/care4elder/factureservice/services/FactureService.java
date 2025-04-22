@@ -30,4 +30,24 @@ public class FactureService {
     public void deleteFacture(String id) {
         factureRepository.deleteById(id);
     }
+
+    // Méthode PUT pour mettre à jour une facture
+    public Facture updateFacture(String id, Facture facture) {
+        // Vérifie si la facture existe
+        Facture existingFacture = factureRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Facture non trouvée"));
+
+        // Mise à jour des propriétés
+        existingFacture.setReference(facture.getReference());
+        existingFacture.setMontant(facture.getMontant());
+        existingFacture.setDescription(facture.getDescription());
+        existingFacture.setStatut(facture.getStatut());
+        existingFacture.setDateEcheance(facture.getDateEcheance());
+        existingFacture.setDateCreation(facture.getDateCreation());
+
+        // Sauvegarde et retourne la facture mise à jour
+        return factureRepository.save(existingFacture);
+    }
+
 }
+
