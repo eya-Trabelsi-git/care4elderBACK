@@ -1,0 +1,48 @@
+<div *ngIf="isLoading" class="loading">
+  <p>Loading...</p>
+</div>
+
+<div *ngIf="!isLoading" class="reclamation-list">
+  <h2>Reclamations List</h2>
+  <div class="action-buttons">
+    <button [routerLink]="['/add-reclamation']" class="btn btn-primary">
+      Add New Reclamation
+    </button>
+     <button [routerLink]="['/dashboard']" class="btn btn-warning">
+      Dashbord
+    </button>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let reclamation of reclamations"
+          [ngClass]="isUrgent(reclamation) ? 'urgent-row' : 'non-urgent-row'">
+        <td>
+          {{ reclamation.titre }}
+          <span *ngIf="isUrgent(reclamation)" class="badge badge-danger">Urgent</span>
+          <span *ngIf="!isUrgent(reclamation)" class="badgee">Non-Urgent</span>
+
+        </td>
+        <td>{{ reclamation.description }}
+          
+        </td>
+        <td>{{ reclamation.dateCreation }}</td>
+        <td>{{ reclamation.etat }}</td>
+        <td>
+          <button (click)="editReclamation(reclamation.id)" class="btn btn-primary">Edit</button>
+          <button (click)="deleteReclamation(reclamation.id)" class="btn btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+    
+  </table>
+</div>

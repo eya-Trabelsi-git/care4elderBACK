@@ -1,0 +1,65 @@
+<div *ngIf="isLoading" class="loading">
+    <p>Loading...</p>
+  </div>
+  
+  <div *ngIf="!isLoading" class="reclamation-edit">
+    <h2>Edit Reclamation</h2>
+  
+    <form *ngIf="reclamation" (ngSubmit)="updateReclamation()">
+      <div class="form-group">
+        <label for="titre">Title</label>
+        <input
+          type="text"
+          id="titre"
+          class="form-control"
+          [(ngModel)]="reclamation.titre"
+          name="titre"
+          required
+        />
+      </div>
+  
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          class="form-control"
+          [(ngModel)]="reclamation.description"
+          name="description"
+          rows="4"
+          required
+        ></textarea>
+      </div>
+  
+      <div class="form-group">
+        <label for="dateCreation">Date Creation</label>
+        <input
+          type="date"
+          id="dateCreation"
+          class="form-control"
+          [(ngModel)]="reclamation.dateCreation"
+          name="dateCreation"
+          required
+        />
+      </div>
+  
+      <div class="form-group">
+        <label for="etat">Status</label>
+        <select
+          id="etat"
+          class="form-control"
+          [(ngModel)]="reclamation.etat"
+          name="etat"
+          required
+        >
+          <option value="EN_ATTENTE">EN_ATTENTE</option>
+          <option value="TRAITEE">TRAITEE</option>
+          <option value="REJETEE">REJETEE</option>
+       
+        </select>
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Update</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+    </form>
+  </div>
+  

@@ -1,0 +1,70 @@
+<div class="container">
+  <h2>Add New Reclamation</h2>
+  <form (ngSubmit)="onSubmit()" #reclamationForm="ngForm">
+
+    <!-- Titre -->
+    <div class="form-group">
+      <label for="titre">Title:</label>
+      <input
+        type="text"
+        id="titre"
+        [(ngModel)]="reclamation.titre"
+        name="titre"
+        class="form-control"
+        required
+        minlength="3"
+      />
+    
+      <div class="text-danger" *ngIf="reclamation.titre && !isTitleValid()">
+        Title must not exceed 8 words.
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea
+        id="description"
+        [(ngModel)]="reclamation.description"
+        name="description"
+        class="form-control"
+        rows="5"
+        required
+      ></textarea>
+ 
+      <div class="text-danger" *ngIf="reclamation.description && !isDescriptionValid()">
+        Description must contain at least 10 words.
+      </div>
+    </div>
+
+    <!-- Date -->
+    <div class="form-group">
+      <label for="dateCreation">Date and Time of Creation:</label>
+      <input
+        type="datetime-local"
+        id="dateCreation"
+        [(ngModel)]="reclamation.dateCreation"
+        name="dateCreation"
+        class="form-control"
+        required
+      />
+    </div>
+
+    <!-- Buttons -->
+    <div class="form-buttons mt-3">
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="
+          !reclamationForm.form.valid ||
+          !isTitleValid() ||
+          !isDescriptionValid()"
+      >
+        Submit
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">
+        Reset
+      </button>
+    </div>
+  </form>
+</div>
