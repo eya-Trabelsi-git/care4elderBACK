@@ -1,4 +1,4 @@
-name: Simple CI (No DB)
+name: Simple CI (No DB) with SonarCloud
 
 on:
   push:
@@ -31,3 +31,10 @@ jobs:
 
       - name: Build without tests (no DB, no H2)
         run: mvn clean install -DskipTests
+
+      - name: Analyze with SonarCloud
+        run: mvn sonar:sonar -DskipTests
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
