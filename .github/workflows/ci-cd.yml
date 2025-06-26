@@ -21,11 +21,10 @@ jobs:
           MYSQL_PASSWORD: apppass
           MYSQL_ROOT_PASSWORD: root
         options: >-
-          --name mysql-db
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -49,7 +48,10 @@ jobs:
       - name: Wait for MySQL to be ready
         run: |
           echo "Waiting for MySQL to start..."
-          sleep 20
+          for i in {1..30}; do
+            nc -z mysql-db 3306 && echo "MySQL is up" && break
+            echo "Waiting for MySQL..." && sleep 2
+          done
 
       - name: Build with Maven
         run: mvn clean install
