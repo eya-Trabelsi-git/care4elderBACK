@@ -2,29 +2,31 @@ name: CI/CD with SonarCloud
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
 
     services:
-      mysql-db:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
+      mysql:
+        image: mysql:8
         env:
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: workbench_db
           MYSQL_USER: appuser
           MYSQL_PASSWORD: apppass
-          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=10
 
     steps:
       - name: Checkout code
@@ -47,11 +49,11 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          echo "Waiting for MySQL to start..."
-          for i in {1..30}; do
-            nc -z mysql-db 3306 && echo "MySQL is up" && break
-            echo "Waiting for MySQL..." && sleep 2
+          echo "Waiting for MySQL..."
+          until mysqladmin ping -hmysql-db -uappuser -papppass --silent; do
+            sleep 5
           done
+          echo "MySQL is up!"
 
       - name: Build with Maven
         run: mvn clean install
