@@ -2,31 +2,29 @@ name: CI/CD with SonarCloud
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8
+      mysql-db:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: workbench_db
           MYSQL_USER: appuser
           MYSQL_PASSWORD: apppass
-        ports:
-          - 3306:3306
+          MYSQL_ROOT_PASSWORD: root
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=10
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -47,17 +45,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Wait for MySQL to be ready and log container
+      - name: Wait for MySQL to be ready
         run: |
-          echo "Checking MySQL logs for status..."
-          docker ps -a
-          docker logs $(docker ps -q --filter ancestor=mysql:8)
-
           echo "Waiting for MySQL to be ready..."
           sudo apt-get update && sudo apt-get install -y default-mysql-client
 
           timeout 120s bash -c '
-            until mysql -hmysql -uroot -proot -e "SELECT 1" &> /dev/null; do
+            until mysql -h mysql-db -uappuser -papppass -e "SELECT 1" &> /dev/null; do
               echo "Waiting for DB..."
               sleep 3
             done
