@@ -31,10 +31,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2-
 
       - name: Build with Maven
-        run: mvn clean install -f ./reclamtion/pom.xml
+        run: mvn clean install -f ../reclamtion/pom.xml
 
       - name: Analyze with SonarCloud
-        run: mvn sonar:sonar -f ./reclamtion/pom.xml
+        run: mvn sonar:sonar -f ../reclamtion/pom.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
