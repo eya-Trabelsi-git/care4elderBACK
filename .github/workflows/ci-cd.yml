@@ -33,11 +33,4 @@ jobs:
         run: mvn clean install -DskipTests
 
       - name: Analyze with SonarCloud
-        run: |
-          mvn sonar:sonar \
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -DskipTests
-        env:
-          SONAR_TOKEN: ${{ secrets.YOUSEFSAANOUN_BACKENDNOUR }}
+        run: mvn verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
