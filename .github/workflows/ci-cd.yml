@@ -47,13 +47,16 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL to be ready (with timeout)
         run: |
-          echo "Waiting for MySQL..."
-          until mysqladmin ping -hmysql-db -uappuser -papppass --silent; do
-            sleep 5
-          done
-          echo "MySQL is up!"
+          echo "Waiting for MySQL to be ready..."
+          timeout 60s bash -c '
+            until mysqladmin ping -hmysql-db -uappuser -papppass --silent; do
+              echo "Waiting for DB..."
+              sleep 2
+            done
+          '
+          echo "✅ MySQL is up!"
 
       - name: Build with Maven
         run: mvn clean install
