@@ -35,6 +35,7 @@ jobs:
       - name: Analyze with SonarCloud
         run: mvn sonar:sonar -DskipTests
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.YOUSEFSAANOUN_BACKENDNOUR }}
           SONAR_HOST_URL: https://sonarcloud.io
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
