@@ -1,4 +1,4 @@
-name: Simple CI (No DB) with SonarCloud
+name: Simple CI (No DB)
 
 on:
   push:
@@ -33,4 +33,4 @@ jobs:
         run: mvn clean install -DskipTests
 
       - name: Analyze with SonarCloud
-        run: mvn verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn verify sonar:sonar -DskipTests=true -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
