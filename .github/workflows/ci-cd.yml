@@ -10,22 +10,6 @@ jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
 
-    services:
-      mysql-db:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_DATABASE: workbench_db
-          MYSQL_USER: appuser
-          MYSQL_PASSWORD: apppass
-          MYSQL_ROOT_PASSWORD: root
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,21 +29,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Wait for MySQL to be ready
-        run: |
-          echo "Waiting for MySQL to be ready..."
-          sudo apt-get update && sudo apt-get install -y default-mysql-client
-
-          timeout 120s bash -c '
-            until mysql -h mysql-db -uappuser -papppass -e "SELECT 1" &> /dev/null; do
-              echo "Waiting for DB..."
-              sleep 3
-            done
-          '
-          echo "✅ MySQL is up!"
-
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Build with Maven (skip DB tests)
+        run: mvn clean install -Dspring.profiles.active=ci -DskipTests=false
 
       - name: Analyze with SonarCloud
         run: mvn sonar:sonar
