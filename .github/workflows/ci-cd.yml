@@ -47,11 +47,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Wait for MySQL to be ready (with timeout)
+      - name: Wait for MySQL to be ready (robust version)
         run: |
-          echo "Waiting for MySQL to be ready..."
+          echo "Checking MySQL readiness via real query..."
+          sudo apt-get update && sudo apt-get install -y default-mysql-client
           timeout 60s bash -c '
-            until mysqladmin ping -hmysql -uappuser -papppass --silent; do
+            until mysql -hmysql -uroot -proot -e "SELECT 1" &> /dev/null; do
               echo "Waiting for DB..."
               sleep 2
             done
