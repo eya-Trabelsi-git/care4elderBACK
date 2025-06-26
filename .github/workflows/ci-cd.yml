@@ -51,7 +51,7 @@ jobs:
         run: |
           echo "Waiting for MySQL to be ready..."
           timeout 60s bash -c '
-            until mysqladmin ping -hmysql-db -uappuser -papppass --silent; do
+            until mysqladmin ping -hmysql -uappuser -papppass --silent; do
               echo "Waiting for DB..."
               sleep 2
             done
