@@ -1,4 +1,4 @@
-name: Simple CI (No DB)
+name: CI with SonarCloud
 
 on:
   push:
@@ -9,18 +9,18 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-analyze:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: '17'
-          distribution: 'adopt'
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -29,5 +29,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Build without tests (no DB, no H2)
+      - name: Build Project
         run: mvn clean install -DskipTests
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: 'https://sonarcloud.io'
