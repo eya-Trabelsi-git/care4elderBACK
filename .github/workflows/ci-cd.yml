@@ -3,10 +3,10 @@ name: CI with SonarCloud
 on:
   push:
     branches:
-      - main
+      - nour2  # Updated to match your branch
   pull_request:
     branches:
-      - main
+      - nour2  # Updated to match your branch
 
 jobs:
   build-and-analyze:
@@ -16,26 +16,21 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Setup Node.js  # Changed to Node.js for JS/TS & Web
+        uses: actions/setup-node@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          node-version: '18'  # Use an appropriate Node.js version
 
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-
+      - name: Install Dependencies
+        run: npm install  # Install project dependencies
 
       - name: Build Project
-        run: mvn clean install -DskipTests
+        run: npm run build  # Adjust build command based on your project
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
-          SONAR_TOKEN: 'aa275200b9c8b5c1241305a15b28f3f357d43f77'
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: 'https://sonarcloud.io'
-          SONAR_ORGANIZATION: 'nourtisaoui'
+          SONAR_ORGANIZATION: 'nourtisaoui'  # Corrected to match SonarCloud
           SONAR_PROJECT_KEY: 'nourtisaoui_nourti'
