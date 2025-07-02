@@ -35,7 +35,7 @@ jobs:
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
-          SONAR_TOKEN: '00793d3434f71de20c40506f9ebe2c523d55d0e4'
+          SONAR_TOKEN: 'aa275200b9c8b5c1241305a15b28f3f357d43f77'
           SONAR_HOST_URL: 'https://sonarcloud.io'
           SONAR_ORGANIZATION: 'nourtisaoui'
-          SONAR_PROJECT_KEY: 'nourtisaoui_nour'
+          SONAR_PROJECT_KEY: 'nourtisaoui_nourti'
